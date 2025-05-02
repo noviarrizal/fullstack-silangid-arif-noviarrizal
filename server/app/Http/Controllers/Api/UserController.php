@@ -15,10 +15,31 @@ class UserController extends Controller
      */
     public function getAllUsers()
     {
-        $users = User::all();
+        $users = User::paginate(10);
+
+        if ($users->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No users found',
+                'users' => [],
+                'pagination' => [
+                    'total' => 0,
+                    'per_page' => 10,
+                    'current_page' => 1
+                ]
+            ], 200);
+        }
+
         return response()->json([
             'status' => true,
-            'users' => $users
+            'message' => 'Users retrieved successfully',
+            'pagination' => [
+                'total' => $users->total(),
+                'per_page' => $users->perPage(),
+                'current_page' => $users->currentPage(),
+                'last_page' => $users->lastPage()
+            ],
+            'users' => $users->items()
         ]);
     }
 
