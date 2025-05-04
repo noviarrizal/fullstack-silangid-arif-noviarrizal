@@ -110,6 +110,27 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+.sidebar {
+  transition: all 0.3s ease;
+}
+
+.sidebar-closed {
+  width: 64px;
+}
+
+.sidebar-open {
+  width: 240px;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.toast-notification {
+  animation: slideIn 0.3s ease forwards;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

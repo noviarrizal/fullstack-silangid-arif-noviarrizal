@@ -36,22 +36,28 @@ class AuthController extends Controller
         return response()->json([
             'status' => true,
             'token' => $token,
-            'user' => $user,
-            'message' => 'User created successfully',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ],
+            'message' => 'User created successfully, please login',
         ], 200);
     }
 
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' =>'required',
-            'password' =>'required',
+            'email' => 'required',
+            'password' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-               'status' => false,
-               'message' => 'validation error',
+                'status' => false,
+                'message' => 'validation error',
                 'errors' => $validator->errors()
             ], 400);
         }
@@ -60,8 +66,8 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-               'status' => false,
-               'message' => 'Invalid credentials',
+                'status' => false,
+                'message' => 'Invalid credentials',
             ], 401);
         }
 
@@ -84,6 +90,4 @@ class AuthController extends Controller
             'message' => 'User logged out successfully',
         ]);
     }
-
-
 }

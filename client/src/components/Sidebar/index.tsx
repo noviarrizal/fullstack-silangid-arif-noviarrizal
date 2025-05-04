@@ -1,7 +1,9 @@
 import { cn } from '@/lib/utils';
-import { Home, LogOut, Menu, Settings, User, Users } from 'lucide-react';
+import { Home, LogOut, Menu, User, Users } from 'lucide-react';
 import { Button } from '../ui/button';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { selectLoginState, setResetState } from '@/pages/Login/loginSlice';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -9,12 +11,20 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
+  const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const location = useLocation();
+    const { dataUser } = useAppSelector(selectLoginState);
+
+    const handleLogout = () => {
+      sessionStorage.removeItem("authToken");
+      dispatch(setResetState());
+      navigate("/");
+    };
 
     const navItems = [
         { path: "/", label: "Dashboard", icon: Home },
         { path: "/users", label: "Users", icon: Users },
-        { path: "/settings", label: "Settings", icon: Settings },
     ];
 
     return (
@@ -80,13 +90,12 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
                   !isOpen && "opacity-0"
                 )}
               >
-                {/* {user?.username} */}
-                test
+                {dataUser.name}
               </span>
             </div>
             <Button
               variant="ghost"
-              onClick={() => {}}
+              onClick={handleLogout}
               disabled={false}
               className="flex items-center w-full px-4 py-2 mt-2 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors justify-start"
             >

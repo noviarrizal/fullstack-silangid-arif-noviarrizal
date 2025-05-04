@@ -22,23 +22,12 @@ class UserController extends Controller
                 'status' => false,
                 'message' => 'No users found',
                 'users' => [],
-                'pagination' => [
-                    'total' => 0,
-                    'per_page' => 10,
-                    'current_page' => 1
-                ]
             ], 200);
         }
 
         return response()->json([
             'status' => true,
             'message' => 'Users retrieved successfully',
-            'pagination' => [
-                'total' => $users->total(),
-                'per_page' => $users->perPage(),
-                'current_page' => $users->currentPage(),
-                'last_page' => $users->lastPage()
-            ],
             'users' => $users->items()
         ]);
     }
@@ -48,7 +37,7 @@ class UserController extends Controller
      */
     public function saveUser(Request $request)
     {
-        $validator = Validator::makle($request->all(), [
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8'
@@ -109,7 +98,6 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' =>'required|email|unique:users,email,'.$user->id,
-            'password' =>'required|min:8'
         ]);
         if($validator->fails()) {
             return response()->json([
@@ -121,7 +109,6 @@ class UserController extends Controller
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
         ]);
         return response()->json([
             'status' => true,
